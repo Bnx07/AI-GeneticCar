@@ -1,65 +1,145 @@
-// function sigmoid(x) {
-//     return 1 / (1 + Math.exp(-x));
-// }
+class Car {
+    constructor(x, y, width, height, brain, ctx, carImage, carImag2) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.rotation = 0;
+        this.speed = 0.1;
+        this.brake = 0.05;
+        this.acceleration = [0, 0]; // ? [ X, Y ]
+        this.friction = 0.98;
+        this.rotationSpeed = 2.5;
+        this.isInside = true;
+        this.brain = brain;
+        this.ctx = ctx;
+        this.carImage = carImage;
+        this.carImag2 = carImag2;
+    }
 
-// // Clase de la red neuronal
-// class NeuralNetwork {
-//     constructor(inputNodes, hiddenNodes, outputNodes) {
-//         this.inputNodes = inputNodes;
-//         this.hiddenNodes = hiddenNodes;
-//         this.outputNodes = outputNodes;
+    draw() {
+        this.ctx.save();
+        this.ctx.translate(this.x, this.y);
+        this.ctx.rotate(this.rotation * Math.PI / 180);
+        if (this.isInside) {
+            this.ctx.drawImage(this.carImage, -this.width / 2, -this.height / 2, this.width, this.height);
+        } else {
+            this.ctx.drawImage(this.carImag2, -this.width / 2, -this.height / 2, this.width, this.height);
+        }
+        this.ctx.restore();
+    }
 
-//         // Inicialización de los pesos
-//         this.weightsInputToHidden = new Array(this.hiddenNodes).fill(null).map(() =>
-//             new Array(this.inputNodes).fill(null).map(() => Math.random() * 2 - 1)
-//         );
+    accelerate(speed) {
+        const radians = this.rotation * (Math.PI / 180);
 
-//         this.weightsHiddenToOutput = new Array(this.outputNodes).fill(null).map(() =>
-//             new Array(this.hiddenNodes).fill(null).map(() => Math.random() * 2 - 1)
-//         );
-//     }
+        this.acceleration[0] += speed * Math.cos(radians);
+        this.acceleration[1] += speed * Math.sin(radians);
+    }
 
-//     // Función de propagación hacia adelante (forward propagation)
-//     predict(inputs) {
-//         const hiddenInputs = this.weightsInputToHidden.map(weights =>
-//             inputs.reduce((sum, input, index) => sum + input * weights[index], 0)
-//         );
+    move() {
+        this.acceleration[0] *= this.friction;
+        this.acceleration[1] *= this.friction;
 
-//         const hiddenOutputs = hiddenInputs.map(sigmoid);
+        if (Math.abs(this.acceleration[0]) < 0.01) this.acceleration[0] = 0;
+        if (Math.abs(this.acceleration[1]) < 0.01) this.acceleration[1] = 0;
 
-//         const finalInputs = this.weightsHiddenToOutput.map(weights =>
-//             hiddenOutputs.reduce((sum, output, index) => sum + output * weights[index], 0)
-//         );
+        this.x += this.acceleration[0];
+        this.y += this.acceleration[1];
+    }
 
-//         const finalOutputs = finalInputs.map(sigmoid);
+    getColorAtPixel(x, y) {
+        const pixelData = this.ctx.getImageData(x, y, 1, 1).data;
+        return pixelData[0];
+    }
 
-//         return finalOutputs;
-//     }
+    calculateCorners() {
+        // Calcula las coordenadas de las esquinas del auto en relación con el centro del auto
+        const halfWidth = this.width / 2;
+        const halfHeight = this.height / 2;
+        const angleInRadians = this.rotation * (Math.PI / 180);
 
-//     // Función de entrenamiento (backpropagation)
-//     train(inputs, targets, learningRate) {
-//         // Implementa el algoritmo de backpropagation para ajustar los pesos
-//     }
-// }
+        const cosAngle = Math.cos(angleInRadians);
+        const sinAngle = Math.sin(angleInRadians);
 
-// // Ejemplo de uso
-// const inputNodes = 14; // 10 distancias, aceleración X, aceleración Y, acciones: acelerar/frenar, doblar/recto
-// const hiddenNodes = 8; // Número de nodos en la capa oculta
-// const outputNodes = 2; // Dos salidas: aceleración y dirección
+        const corners = [
+            { x: -halfWidth, y: -halfHeight}, // Esquina inferior izquierda
+            { x: halfWidth, y: -halfHeight},  // Esquina superior izquierda
+            { x: halfWidth, y: halfHeight},   // Esquina superior derecha
+            { x: -halfWidth, y: halfHeight}   // Esquina inferior derecha
+        ];
 
-// const neuralNetwork = new NeuralNetwork(inputNodes, hiddenNodes, outputNodes);
+        // Aplica la rotación a las esquinas del auto
+        for (let i = 0; i < corners.length; i++) {
+            const rotatedX = corners[i].x * cosAngle - corners[i].y * sinAngle;
+            const rotatedY = corners[i].x * sinAngle + corners[i].y * cosAngle;
+            corners[i].x = this.x + rotatedX;
+            corners[i].y = this.y + rotatedY;
+        }
 
-// // Entrenamiento (debes implementar esta parte)
-// const trainingData = []; // Tu conjunto de datos de entrenamiento (entradas y objetivos)
+        return corners;
+    }
 
-// for (let i = 0; i < numIterations; i++) {
-//     for (const data of trainingData) {
-//         const inputs = data.inputs;
-//         const targets = data.targets;
-//         neuralNetwork.train(inputs, targets, learningRate);
-//     }
-// }
+    isInsideRoad() {
+        const corners = this.calculateCorners();
+        const threshold = 170; // Umbral para determinar el color gris claro de la calle
+        let limitCorners = 0;
 
-// // Uso de la red neuronal entrenada
-// const inputs = [/* tus valores de entrada */];
-// const predictions = neuralNetwork.predict(inputs);
+        this.isInside = true;
+        
+        for (const corner of corners) {
+            if (this.getColorAtPixel(corner.x, corner.y) < threshold) {
+                limitCorners += 1;
+            }
+        }
+
+        if (limitCorners >= 2) this.isInside = false;
+    }
+
+    calculateVision() {
+        let corners = this.calculateCorners();
+        let distance = [];
+
+        let topLeft = corners[1];
+        let topRight = corners[2];
+        
+        distance.push(this.rayCast(topLeft.x, topLeft.y, -45));
+        distance.push(this.rayCast(topLeft.x, topLeft.y, -35));
+        distance.push(this.rayCast(topLeft.x, topLeft.y, -25));
+        distance.push(this.rayCast(topLeft.x, topLeft.y, -15));
+        distance.push(this.rayCast(topLeft.x, topLeft.y));
+
+        distance.push(this.rayCast(topRight.x, topRight.y));
+        distance.push(this.rayCast(topRight.x, topRight.y, 15));
+        distance.push(this.rayCast(topRight.x, topRight.y, 25));
+        distance.push(this.rayCast(topRight.x, topRight.y, 35));
+        distance.push(this.rayCast(topRight.x, topRight.y, 45));
+
+        return distance;
+    }
+
+    rayCast(x, y, rayAngle = 0) {
+        const rayDirectionX = Math.cos((this.rotation + rayAngle) * Math.PI / 180);
+        const rayDirectionY = Math.sin((this.rotation + rayAngle) * Math.PI / 180);        
+        
+        let rayPosX = x;
+        let rayPosY = y;
+    
+        while (this.getColorAtPixel(rayPosX, rayPosY) > 170) {
+            rayPosX += rayDirectionX;
+            rayPosY += rayDirectionY;
+        }
+    
+        this.ctx.fillStyle = 'green';
+
+        this.ctx.beginPath();
+        this.ctx.arc(rayPosX, rayPosY, 5, 0, 2 * Math.PI); // Dibuja un círculo completo
+        this.ctx.fill();
+
+        const distance = Math.sqrt(Math.pow(rayPosX - this.x, 2) + Math.pow(rayPosY - this.y, 2));
+        return distance;
+    }
+}
+
+// ? Brain is recieved as a param of the constructor
+
+export default Car;

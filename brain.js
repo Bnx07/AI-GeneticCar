@@ -1,5 +1,13 @@
 class Brain {
-    constructor() {
+    constructor(sideDistance, straightDistance, turnThreshold, speedThreshold) {
+        this.isAlive = true;
+        this.sideDistance = sideDistance;
+        this.straightDistance = straightDistance;
+        this.turnThreshold = turnThreshold;
+        this.speedThreshold = speedThreshold;
+    }
+
+    decideMovement(visionValues, accelerationX, accelerationY) {
 
     }
 
@@ -27,3 +35,5 @@ class Brain {
     // ? Recompensa moderada por cruzar un lugar amarillo
     // ? Detención de la IA por salir de la calle
 }
+
+export default Brain;
