@@ -47,6 +47,18 @@ class Car {
         this.y += this.acceleration[1];
     }
 
+    thinkMove() {
+        let result = this.brain.decideMovement(this.calculateVision(), this.acceleration);
+
+        if (result[0] == 1) this.accelerate(this.speed);
+        else if (result[0] == -1) this.accelerate(this.brake)
+
+        if (result[1] == -1) this.rotation -= this.rotationSpeed;
+        else if (result[1] == 1) this.rotation += this.rotationSpeed;
+
+        console.log(result);
+    }
+
     getColorAtPixel(x, y) {
         const pixelData = this.ctx.getImageData(x, y, 1, 1).data;
         return pixelData[0];

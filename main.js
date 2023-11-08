@@ -2,7 +2,7 @@
 
 import Brain from './brain.js';
 import Car from './car.js';
-import { isKeyPressed, onKeyDown, onKeyUp } from './event-handlers.js';
+import { isKeyPressed, onKeyDown, onKeyUp, qKeyDown } from './event-handlers.js';
 
 // ! GLOBAL VARIABLES
 
@@ -10,6 +10,10 @@ const canvas = document.getElementById('raceCanvas');
 const ctx = canvas.getContext('2d');
 ctx.willReadFrequently = true;
 let excecutionSpeed = 5; // ? MILISECONDS;
+let generation = 1;
+let maxAgents = 10;
+let aliveAgents = [];
+let deadAgents = [];
 
 // ! IMAGES
 
@@ -22,7 +26,7 @@ carImage.src = '/images/car.png';
 carImag2.src = '/images/car2.png';
 
 
-const car = new Car(300, 200, 50, 20, {}, ctx, carImage, carImag2);
+const car = new Car(300, 200, 50, 20, new Brain(9, 100, 40, 9), ctx, carImage, carImag2);
 
 // ! CANVAS FUNCTIONS
 
@@ -44,10 +48,10 @@ function clearCanvas() {
 
 window.addEventListener('keydown', onKeyDown);
 window.addEventListener('keyup', onKeyUp);
+window.addEventListener('keydown', (event) => qKeyDown(event, car));
 
 function updateMovement() {
     if (isKeyPressed('w')) {
-        console.log("Acelerar")
         car.accelerate(car.speed);
     }
     if (isKeyPressed('a')) {
@@ -74,10 +78,9 @@ createRoad();
 // ! PHYSICS ENGINE
 
 function actualizarJuego() {
-    console.log("1")
     updateMovement();
     car.isInsideRoad();
-    car.calculateVision();
+    car.thinkMove();
     requestAnimationFrame(actualizarJuego);
 }
 
