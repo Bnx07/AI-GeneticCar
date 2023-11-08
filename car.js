@@ -20,15 +20,15 @@ class Car {
     }
 
     draw() {
-        this.ctx.save();
-        this.ctx.translate(this.x, this.y);
-        this.ctx.rotate(this.rotation * Math.PI / 180);
+        this.ctx.ctx.save();
+        this.ctx.ctx.translate(this.x, this.y);
+        this.ctx.ctx.rotate(this.rotation * Math.PI / 180);
         if (this.isInside) {
-            this.ctx.drawImage(this.carImage, -this.width / 2, -this.height / 2, this.width, this.height);
+            this.ctx.ctx.drawImage(this.carImage, -this.width / 2, -this.height / 2, this.width, this.height);
         } else {
-            this.ctx.drawImage(this.carImag2, -this.width / 2, -this.height / 2, this.width, this.height);
+            this.ctx.ctx.drawImage(this.carImag2, -this.width / 2, -this.height / 2, this.width, this.height);
         }
-        this.ctx.restore();
+        this.ctx.ctx.restore();
     }
 
     accelerate(speed) {
@@ -62,7 +62,7 @@ class Car {
     }
 
     getColorAtPixel(x, y) {
-        const pixelData = this.ctx.getImageData(x, y, 1, 1).data;
+        const pixelData = this.ctx.ctx.getImageData(x, y, 1, 1).data;
         return pixelData[0];
     }
 
@@ -152,11 +152,11 @@ class Car {
             rayPosY += rayDirectionY;
         }
     
-        this.ctx.fillStyle = 'green';
+        // this.ctx.ctx.fillStyle = 'green';
 
-        this.ctx.beginPath();
-        this.ctx.arc(rayPosX, rayPosY, 5, 0, 2 * Math.PI); // Dibuja un círculo completo
-        this.ctx.fill();
+        // this.ctx.ctx.beginPath();
+        // this.ctx.ctx.arc(rayPosX, rayPosY, 5, 0, 2 * Math.PI); // Dibuja un círculo completo
+        // this.ctx.ctx.fill();
 
         const distance = Math.sqrt(Math.pow(rayPosX - this.x, 2) + Math.pow(rayPosY - this.y, 2));
         return distance;
