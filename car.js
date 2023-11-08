@@ -15,6 +15,8 @@ class Car {
         this.ctx = ctx;
         this.carImage = carImage;
         this.carImag2 = carImag2;
+        this.reward = 0;
+        this.hasStarted = false;
     }
 
     draw() {
@@ -48,15 +50,15 @@ class Car {
     }
 
     thinkMove() {
-        let result = this.brain.decideMovement(this.calculateVision(), this.acceleration);
-
-        if (result[0] == 1) this.accelerate(this.speed);
-        else if (result[0] == -1) this.accelerate(this.brake)
-
-        if (result[1] == -1) this.rotation -= this.rotationSpeed;
-        else if (result[1] == 1) this.rotation += this.rotationSpeed;
-
-        console.log(result);
+        if (this.isInside) {
+            let result = this.brain.decideMovement(this.calculateVision(), this.acceleration);
+    
+            if (result[0] == 1) this.accelerate(this.speed);
+            else if (result[0] == -1) this.accelerate(this.brake)
+    
+            if (result[1] == -1) this.rotation -= this.rotationSpeed;
+            else if (result[1] == 1) this.rotation += this.rotationSpeed;
+        }
     }
 
     getColorAtPixel(x, y) {
@@ -91,20 +93,29 @@ class Car {
         return corners;
     }
 
+    rewardExistence() {
+        if (this.isInside) this.reward += 1;
+    }
+
     isInsideRoad() {
-        const corners = this.calculateCorners();
-        const threshold = 170; // Umbral para determinar el color gris claro de la calle
-        let limitCorners = 0;
-
-        this.isInside = true;
-        
-        for (const corner of corners) {
-            if (this.getColorAtPixel(corner.x, corner.y) < threshold) {
-                limitCorners += 1;
+        if (this.hasStarted && this.isInside) {
+            const corners = this.calculateCorners();
+            const threshold = 170; // Umbral para determinar el color gris claro de la calle
+            let limitCorners = 0;
+    
+            for (const corner of corners) {
+                let pixelColor = this.getColorAtPixel(corner.x, corner.y);
+                if (pixelColor < threshold) {
+                    limitCorners += 1;
+                } else if (pixelColor > 254 && this.isInside) {
+                    this.reward += 50;
+                }
             }
+    
+            if (limitCorners >= 2) this.isInside = false;
+        } else {
+            this.hasStarted = true;
         }
-
-        if (limitCorners >= 2) this.isInside = false;
     }
 
     calculateVision() {

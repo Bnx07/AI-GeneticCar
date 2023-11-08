@@ -2,7 +2,8 @@
 
 import Brain from './brain.js';
 import Car from './car.js';
-import { isKeyPressed, onKeyDown, onKeyUp, qKeyDown } from './event-handlers.js';
+import { isKeyPressed, onKeyDown, onKeyUp } from './event-handlers.js';
+import Genetic from './genetic.js';
 
 // ! GLOBAL VARIABLES
 
@@ -11,9 +12,8 @@ const ctx = canvas.getContext('2d');
 ctx.willReadFrequently = true;
 let excecutionSpeed = 5; // ? MILISECONDS;
 let generation = 1;
-let maxAgents = 10;
-let aliveAgents = [];
-let deadAgents = [];
+
+const genetic = new Genetic(0.05);
 
 // ! IMAGES
 
@@ -25,8 +25,11 @@ roadImage.src = '/images/road2.jpg';
 carImage.src = '/images/car.png';
 carImag2.src = '/images/car2.png';
 
+// * Excellent AI
+// let car = new Car(300, 180, 50, 20, new Brain(100, 150, 70, 200), ctx, carImage, carImag2);
 
-const car = new Car(300, 200, 50, 20, new Brain(9, 100, 40, 9), ctx, carImage, carImag2);
+// * AI to evolve
+let car = new Car(300, 180, 50, 20, new Brain(70, 80, 40, 90), ctx, carImage, carImag2);
 
 // ! CANVAS FUNCTIONS
 
@@ -44,29 +47,6 @@ function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-// ! PLAYER MOVEMENT
-
-window.addEventListener('keydown', onKeyDown);
-window.addEventListener('keyup', onKeyUp);
-window.addEventListener('keydown', (event) => qKeyDown(event, car));
-
-function updateMovement() {
-    if (isKeyPressed('w')) {
-        car.accelerate(car.speed);
-    }
-    if (isKeyPressed('a')) {
-        car.rotation -= car.rotationSpeed;
-    }
-    if (isKeyPressed('s')) {
-        car.accelerate(-car.brake);
-    }
-    if (isKeyPressed('d')) {
-        car.rotation += car.rotationSpeed;
-    }
-
-    updateCanvas();
-}
-
 // ! CAR CONTROL
 
 setInterval(() => {
@@ -78,9 +58,16 @@ createRoad();
 // ! PHYSICS ENGINE
 
 function actualizarJuego() {
-    updateMovement();
     car.isInsideRoad();
+    car.rewardExistence();
     car.thinkMove();
+    if (!car.isInside) {
+        genetic.isBestScore(car);
+        let mutations = genetic.mutate();
+        generation += 1;
+        document.getElementById('generation').innerHTML = generation;
+        car = new Car(300, 180, 50, 20, new Brain(Math.floor(mutations[0]), Math.floor(mutations[1]), Math.floor(mutations[2]), Math.floor(mutations[3])), ctx, carImage, carImag2);
+    }
     requestAnimationFrame(actualizarJuego);
 }
 

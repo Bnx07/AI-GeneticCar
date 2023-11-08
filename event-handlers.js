@@ -11,9 +11,3 @@ export function onKeyUp(event) {
 export function isKeyPressed(key) {
     return teclasPresionadas[key] || false;
 }
-
-export function qKeyDown(event, callback) {
-    if (event.key === 'q') {
-        callback.thinkMove()
-    }
-}
