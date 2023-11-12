@@ -26,10 +26,10 @@ carImage.src = '/images/car.png';
 carImag2.src = '/images/car2.png';
 
 // * Excellent AI
-// let car = new Car(300, 180, 50, 20, new Brain(100, 150, 70, 200), ctx, carImage, carImag2);
+let car = new Car(300, 180, 50, 20, new Brain(100, 150, 70, 200), ctx, carImage, carImag2);
 
 // * AI to evolve
-let car = new Car(300, 180, 50, 20, new Brain(70, 80, 40, 90), ctx, carImage, carImag2);
+// let car = new Car(300, 180, 50, 20, new Brain(70, 80, 40, 90), ctx, carImage, carImag2);
 
 // ! CANVAS FUNCTIONS
 

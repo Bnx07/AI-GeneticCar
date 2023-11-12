@@ -50,9 +50,9 @@ class Brain {
         // ? El doblar es muy bajo en comparacion a la distancia de frente
         let isSignificantTurn = false;
         if (turnDirection == -1) {
-            if (avgLeftDistance + this.turnThreshold < avgFrontDistance) isSignificantTurn = true;
+            if (avgLeftDistance + this.turnThreshold > avgFrontDistance) isSignificantTurn = true;
         } else if (turnDirection == 1) {
-            if (avgRightDistance + this.turnThreshold < avgFrontDistance) isSignificantTurn = true;
+            if (avgRightDistance + this.turnThreshold > avgFrontDistance) isSignificantTurn = true;
         }
 
         // ! OUTPUT LAYER
