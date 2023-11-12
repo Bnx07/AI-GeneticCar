@@ -1,4 +1,6 @@
 class Car {
+    // TODO: Disable all drawings of cars so multiple cars can be built simultaneously
+    
     constructor(x, y, width, height, brain, ctx, carImage, carImag2) {
         this.x = x;
         this.y = y;
