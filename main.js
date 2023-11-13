@@ -2,7 +2,6 @@
 
 import Brain from './brain.js';
 import Car from './car.js';
-import { isKeyPressed, onKeyDown, onKeyUp } from './event-handlers.js';
 import Genetic from './genetic.js';
 
 // ! GLOBAL VARIABLES
@@ -13,23 +12,23 @@ ctx.willReadFrequently = true;
 let excecutionSpeed = 5; // ? MILISECONDS;
 let generation = 1;
 
-const genetic = new Genetic(0.05);
-
 // ! IMAGES
 
 const roadImage = new Image();
 const carImage = new Image();
 const carImag2 = new Image();
 
-roadImage.src = '/images/road2.jpg';
+roadImage.src = '/images/road3.png';
 carImage.src = '/images/car.png';
 carImag2.src = '/images/car2.png';
 
-// * Excellent AI
+let cars = [];
+
 let car = new Car(300, 180, 50, 20, new Brain(100, 150, 70, 200), ctx, carImage, carImag2);
 
-// * AI to evolve
-// let car = new Car(300, 180, 50, 20, new Brain(70, 80, 40, 90), ctx, carImage, carImag2);
+cars.push(car);
+
+let genetic = new Genetic(0.3, cars);
 
 // ! CANVAS FUNCTIONS
 
@@ -40,7 +39,7 @@ function createRoad() {
 function updateCanvas() {
     clearCanvas();
     createRoad();
-    car.draw();
+    // cars.forEach(car => car.draw());
 }
 
 function clearCanvas() {
@@ -50,25 +49,32 @@ function clearCanvas() {
 // ! CAR CONTROL
 
 setInterval(() => {
-    car.move();
     updateCanvas();
+    genetic.alivePopulation.forEach(car => car.move());
 }, excecutionSpeed);
 createRoad();
 
 // ! PHYSICS ENGINE
 
+setTimeout(() => {
+    actualizarJuego();
+}, 500)
+
 function actualizarJuego() {
-    car.isInsideRoad();
-    car.rewardExistence();
-    car.thinkMove();
-    if (!car.isInside) {
-        genetic.isBestScore(car);
-        let mutations = genetic.mutate();
+    genetic.alivePopulation.forEach(car => car.isInsideRoad());
+    genetic.alivePopulation.forEach(car => car.rewardExistence());
+    genetic.alivePopulation.forEach(car => car.thinkMove());
+    if (genetic.checkAgentAlive()) {
         generation += 1;
         document.getElementById('generation').innerHTML = generation;
-        car = new Car(300, 180, 50, 20, new Brain(Math.floor(mutations[0]), Math.floor(mutations[1]), Math.floor(mutations[2]), Math.floor(mutations[3])), ctx, carImage, carImag2);
+        cars = [];
+        for (var i = 0; i < 7; i ++) {
+            let mutations = genetic.mutate();
+            cars.push(new Car(300, 180, 50, 20, new Brain(Math.floor(mutations[0]), Math.floor(mutations[1]), Math.floor(mutations[2]), Math.floor(mutations[3])), ctx, carImage, carImag2));
+            genetic.setNewPopulation(cars);
+            console.log(genetic.bestBrain);
+        }
     }
+    
     requestAnimationFrame(actualizarJuego);
 }
-
-actualizarJuego();

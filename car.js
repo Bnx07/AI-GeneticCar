@@ -16,7 +16,6 @@ class Car {
         this.carImage = carImage;
         this.carImag2 = carImag2;
         this.reward = 0;
-        this.hasStarted = false;
     }
 
     draw() {
@@ -98,7 +97,7 @@ class Car {
     }
 
     isInsideRoad() {
-        if (this.hasStarted && this.isInside) {
+        if (this.isInside) {
             const corners = this.calculateCorners();
             const threshold = 170; // Umbral para determinar el color gris claro de la calle
             let limitCorners = 0;
@@ -113,8 +112,6 @@ class Car {
             }
     
             if (limitCorners >= 2) this.isInside = false;
-        } else {
-            this.hasStarted = true;
         }
     }
 
@@ -152,11 +149,11 @@ class Car {
             rayPosY += rayDirectionY;
         }
     
-        this.ctx.fillStyle = 'green';
+        // this.ctx.fillStyle = 'green';
 
-        this.ctx.beginPath();
-        this.ctx.arc(rayPosX, rayPosY, 5, 0, 2 * Math.PI); // Dibuja un círculo completo
-        this.ctx.fill();
+        // this.ctx.beginPath();
+        // this.ctx.arc(rayPosX, rayPosY, 5, 0, 2 * Math.PI); // Dibuja un círculo completo
+        // this.ctx.fill();
 
         const distance = Math.sqrt(Math.pow(rayPosX - this.x, 2) + Math.pow(rayPosY - this.y, 2));
         return distance;
