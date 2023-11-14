@@ -3,6 +3,7 @@ class Genetic {
         this.randomness = randomness;
         this.bestScore = 0;
         this.bestBrain = [];
+        this.bestGeneration = 0;
         this.alivePopulation = population;
         this.deadPopulation = [];
     }
@@ -22,16 +23,17 @@ class Genetic {
         return mutation;
     }
 
-    isBestScore(car) {
+    isBestScore(car, gen) {
         if (car.reward > this.bestScore) {
             this.bestScore = car.reward
             this.bestBrain = [car.brain.sideDistance, car.brain.straightDistance, car.brain.straightClose, car.brain.turnThreshold];
+            this.bestGeneration = gen;
         }
-        console.log(this.bestBrain)
     }
 
-    checkAgentAlive() {
+    checkAgentAlive(gen) {
         if (this.alivePopulation.length != 0) {
+            if (this.alivePopulation.length == 1) this.alivePopulation[0].showAgent = true;
             let removePositions = [];
             this.alivePopulation.forEach((agent, index) => {
                 if (!agent.isInside) {
@@ -43,7 +45,7 @@ class Genetic {
             removePositions = removePositions.sort((a, b) => b - a);
     
             removePositions.forEach(pos => {
-                this.isBestScore(this.alivePopulation[pos]);
+                this.isBestScore(this.alivePopulation[pos], gen);
             })
     
             removePositions.forEach(pos => {

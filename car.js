@@ -1,14 +1,14 @@
 class Car {
-    constructor(x, y, width, height, brain, ctx, carImage, carImag2) {
+    constructor(x, y, width, height, brain, ctx, carImage, carImag2, showAgent = false) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.rotation = 0;
-        this.speed = 0.1;
-        this.brake = 0.05;
+        this.speed = 0.15;
+        this.brake = 0.08;
         this.acceleration = [0, 0]; // ? [ X, Y ]
-        this.friction = 0.98;
+        this.friction = 0.97;
         this.rotationSpeed = 2.5;
         this.isInside = true;
         this.brain = brain;
@@ -16,18 +16,21 @@ class Car {
         this.carImage = carImage;
         this.carImag2 = carImag2;
         this.reward = 0;
+        this.showAgent = showAgent;
     }
 
     draw() {
-        this.ctx.save();
-        this.ctx.translate(this.x, this.y);
-        this.ctx.rotate(this.rotation * Math.PI / 180);
-        if (this.isInside) {
-            this.ctx.drawImage(this.carImage, -this.width / 2, -this.height / 2, this.width, this.height);
-        } else {
-            this.ctx.drawImage(this.carImag2, -this.width / 2, -this.height / 2, this.width, this.height);
+        if (this.showAgent) {
+            this.ctx.save();
+            this.ctx.translate(this.x, this.y);
+            this.ctx.rotate(this.rotation * Math.PI / 180);
+            if (this.isInside) {
+                this.ctx.drawImage(this.carImage, -this.width / 2, -this.height / 2, this.width, this.height);
+            } else {
+                this.ctx.drawImage(this.carImag2, -this.width / 2, -this.height / 2, this.width, this.height);
+            }
+            this.ctx.restore();
         }
-        this.ctx.restore();
     }
 
     accelerate(speed) {
@@ -93,7 +96,11 @@ class Car {
     }
 
     rewardExistence() {
-        if (this.isInside) this.reward += 1;
+        if (this.isInside) {
+            if (this.acceleration[0] == 0 && this.acceleration[1] == 0) this.reward -= 20;
+            else this.reward += 1;
+            if (this.reward <= -100) this.isInside = false;
+        }
     }
 
     isInsideRoad() {
