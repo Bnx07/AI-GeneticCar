@@ -1,8 +1,8 @@
 class Genetic {
     constructor(randomness, population) {
         this.randomness = randomness;
-        this.bestScore = 0;
-        this.bestBrain = [];
+        this.bestScore = 300;
+        this.bestBrain = [100, 150, 70, 200];
         this.bestGeneration = 0;
         this.alivePopulation = population;
         this.deadPopulation = [];

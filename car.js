@@ -53,7 +53,7 @@ class Car {
 
     thinkMove() {
         if (this.isInside) {
-            let result = this.brain.decideMovement(this.calculateVision(), this.acceleration);
+            let result = this.brain.decideMovement(this.calculateVision());
     
             if (result[0] == 1) this.accelerate(this.speed);
             else if (result[0] == -1) this.accelerate(this.brake)
