@@ -11,8 +11,20 @@
     </style>
 </head>
 <body>
-    <h1>Generation: <span id="generation">1</span></h1>
+    <div style="display: flex; gap: 15px">
+        <h1>Generation: <span id="generation">1</span></h1>
+        <h1>Best score: <span id="bestScore">1</span></h1>
+        <h1>Best Generation: <span id="bestGen">1</span></h1>
+    </div>
     <canvas id="raceCanvas" width="1800" height="900"></canvas>
+    <h3>Keybindings: </h3>
+    <ul>
+        <li style="display: flex; gap: 10px;"><h3 style="width: 15px;">D: </h3><p>Creates a new 1 visible car generation</p></li>
+        <li style="display: flex; gap: 10px;"><h3 style="width: 15px;">Q: </h3><p>Kills the current generation</p></li>
+        <li style="display: flex; gap: 10px;"><h3 style="width: 15px;">S: </h3><p>Allows to input a new brain (Open console to see the best one)</p></li>
+        <li style="display: flex; gap: 10px;"><h3 style="width: 15px;">P: </h3><p>Prints in console the current generation</p></li>
+        <li style="display: flex; gap: 10px;"><h3 style="width: 15px;">R: </h3><p>Replaces the road</p></li>
+    </ul>
     <script type="module" src="main.js"></script>
 </body>
 </html>
