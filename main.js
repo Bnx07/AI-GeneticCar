@@ -19,6 +19,9 @@ const roadImage = new Image();
 const carImage = new Image();
 const carImag2 = new Image();
 
+let roadImageLoaded = 0;
+let roadImages = ['/images/road2.jpg', '/images/road3.png', '/images/road4.png'];
+
 roadImage.src = '/images/road2.jpg';
 carImage.src = '/images/car.png';
 carImag2.src = '/images/car2.png';
@@ -110,5 +113,12 @@ window.addEventListener('keydown', (event) => {
         genetic.bestBrain = copiedBrain;
     } else if (event.key == "p") {
         console.log(genetic.alivePopulation);
+    } else if (event.key == 'r') {
+        if (roadImageLoaded + 1 <= roadImages.length - 1) {
+            roadImageLoaded += 1;
+        } else {
+            roadImageLoaded = 0;
+        }
+        roadImage.src = roadImages[roadImageLoaded];
     }
 });
