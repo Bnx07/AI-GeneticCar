@@ -20,9 +20,9 @@ const carImage = new Image();
 const carImag2 = new Image();
 
 let roadImageLoaded = 0;
-let roadImages = ['/images/road2.jpg', '/images/road3.png', '/images/road4.png'];
+let roadImages = ['/images/road1.png', '/images/road2.png', '/images/road3.png', '/images/road4.png', '/images/road5.png', '/images/road6.png', '/images/road7.png'];
 
-roadImage.src = '/images/road2.jpg';
+roadImage.src = '/images/road1.png';
 carImage.src = '/images/car.png';
 carImag2.src = '/images/car2.png';
 
@@ -124,3 +124,7 @@ window.addEventListener('keydown', (event) => {
 });
 
 // TODO: Crear en branch training una función que haga un camino, si supera X puntaje, entonces que haga el siguiente, si supera Y puntaje, el siguiente, y si se realizan modificaciones en una generación, entonces que revise si sigue siendo capaz de pasar los caminos anteriores, si no puede que vuelva a entrenar ahi
+
+// TODO: Crear una ruta con obstáculos en medio, como una rotonda por ejemplo
+
+// TODO: Quitar atajo Q y hacer que D vea si alguno es el mejor auto

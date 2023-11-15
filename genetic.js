@@ -6,6 +6,8 @@ class Genetic {
         this.bestGeneration = 0;
         this.alivePopulation = population;
         this.deadPopulation = [];
+        this.lastRoadMutated = 0; // ? Si difiere de 0, entonces que cuando se supere el puntaje, lo mande a la ruta 0 y se reestablezca
+        this.scoresToBeat = [] // ? Puntajes a superar en cada calle
     }
 
     mutate() {
@@ -24,8 +26,8 @@ class Genetic {
     }
 
     isBestScore(car, gen) {
-        if (car.reward > this.bestScore) {
-            this.bestScore = car.reward
+        if (car.maxReward > this.bestScore) {
+            this.bestScore = car.maxReward
             this.bestBrain = [car.brain.sideDistance, car.brain.straightDistance, car.brain.straightClose, car.brain.turnThreshold];
             this.bestGeneration = gen;
         }

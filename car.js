@@ -16,6 +16,7 @@ class Car {
         this.carImage = carImage;
         this.carImag2 = carImag2;
         this.reward = 0;
+        this.maxReward = 0;
         this.showAgent = showAgent;
     }
 
@@ -97,9 +98,12 @@ class Car {
 
     rewardExistence() {
         if (this.isInside) {
-            if (this.acceleration[0] == 0 && this.acceleration[1] == 0) this.reward -= 20;
-            else this.reward += 1;
-            if (this.reward <= -100) this.isInside = false;
+            if (this.acceleration[0] == 0 && this.acceleration[1] == 0) this.reward -= 60;
+            else {
+                this.reward += 1;
+                if (this.maxReward < this.reward) this.maxReward = this.reward
+            }
+            if (this.reward - this.maxReward <= -1000) this.isInside = false;
         }
     }
 
