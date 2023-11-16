@@ -98,8 +98,9 @@ class Car {
 
     rewardExistence() {
         if (this.isInside) {
-            if (this.acceleration[0] == 0 && this.acceleration[1] == 0) this.reward -= 60;
-            else {
+            if (this.acceleration[0] == 0 && this.acceleration[1] == 0) {
+                this.reward -= 80;
+            } else {
                 this.reward += 1;
                 if (this.maxReward < this.reward) this.maxReward = this.reward
             }

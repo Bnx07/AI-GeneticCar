@@ -95,16 +95,12 @@ function actualizarJuego() {
 
 window.addEventListener('keydown', (event) => {
     if (event.key == "d") {
+        genetic.alivePopulation.forEach(agent => agent.isInside = false);
+        genetic.deadPopulation = genetic.alivePopulation;
+        genetic.deadPopulation.forEach(agent => genetic.isBestScore(agent, generation));
         genetic.deadPopulation = [];
         cars = [new Car(300, 180, 50, 20, new Brain(genetic.bestBrain[0], genetic.bestBrain[1], genetic.bestBrain[1], genetic.bestBrain[1]), ctx, carImage, carImag2, true)];
         genetic.alivePopulation = cars;
-    } else if (event.key == "q") {
-        console.log(genetic.alivePopulation)
-        genetic.deadPopulation = genetic.alivePopulation;
-        genetic.deadPopulation.forEach(agent => {
-            agent.isInside = false;
-        })
-        genetic.alivePopulation = [];
     } else if (event.key == "s") {
         let copyBestScore = prompt('Input the best score');
         let copyBestBrain = prompt('Input the brain');
@@ -125,6 +121,7 @@ window.addEventListener('keydown', (event) => {
 
 // TODO: Crear en branch training una función que haga un camino, si supera X puntaje, entonces que haga el siguiente, si supera Y puntaje, el siguiente, y si se realizan modificaciones en una generación, entonces que revise si sigue siendo capaz de pasar los caminos anteriores, si no puede que vuelva a entrenar ahi
 
-// TODO: Crear una ruta con obstáculos en medio, como una rotonda por ejemplo
+// TODO: Hacer una nueva clase que sea para el TODO de arriba
 
-// TODO: Quitar atajo Q y hacer que D vea si alguno es el mejor auto
+
+// // TO DO: Crear una ruta con obstáculos en medio, como una rotonda por ejemplo
