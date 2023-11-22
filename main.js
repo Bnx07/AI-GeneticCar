@@ -52,6 +52,15 @@ function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+function swapRoad() {
+    if (roadImageLoaded + 1 <= roadImages.length - 1) {
+        roadImageLoaded += 1;
+    } else {
+        roadImageLoaded = 0;
+    }
+    roadImage.src = roadImages[roadImageLoaded];
+}
+
 // ! CAR PHYSIC MOVEMENT
 
 setInterval(() => {
@@ -110,18 +119,14 @@ window.addEventListener('keydown', (event) => {
     } else if (event.key == "p") {
         console.log(genetic.alivePopulation);
     } else if (event.key == 'r') {
-        if (roadImageLoaded + 1 <= roadImages.length - 1) {
-            roadImageLoaded += 1;
-        } else {
-            roadImageLoaded = 0;
-        }
-        roadImage.src = roadImages[roadImageLoaded];
+        swapRoad();
     }
 });
+
+// FIXME: Revisar que el maxReward y reward funcionen bien
 
 // TODO: Crear en branch training una función que haga un camino, si supera X puntaje, entonces que haga el siguiente, si supera Y puntaje, el siguiente, y si se realizan modificaciones en una generación, entonces que revise si sigue siendo capaz de pasar los caminos anteriores, si no puede que vuelva a entrenar ahi
 
 // TODO: Hacer una nueva clase que sea para el TODO de arriba
-
 
 // // TO DO: Crear una ruta con obstáculos en medio, como una rotonda por ejemplo
