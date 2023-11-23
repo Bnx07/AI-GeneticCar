@@ -20,9 +20,9 @@ const carImage = new Image();
 const carImag2 = new Image();
 
 let roadImageLoaded = 0;
-let roadImages = ['/images/road2.jpg', '/images/road3.png', '/images/road4.png'];
+let roadImages = ['/images/road1.png', '/images/road2.png', '/images/road3.png', '/images/road4.png', '/images/road5.png', '/images/road6.png', '/images/road7.png'];
 
-roadImage.src = '/images/road2.jpg';
+roadImage.src = '/images/road1.png';
 carImage.src = '/images/car.png';
 carImag2.src = '/images/car2.png';
 
@@ -50,6 +50,15 @@ function updateCanvas() {
 
 function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function swapRoad() {
+    if (roadImageLoaded + 1 <= roadImages.length - 1) {
+        roadImageLoaded += 1;
+    } else {
+        roadImageLoaded = 0;
+    }
+    roadImage.src = roadImages[roadImageLoaded];
 }
 
 // ! CAR PHYSIC MOVEMENT
@@ -95,16 +104,12 @@ function actualizarJuego() {
 
 window.addEventListener('keydown', (event) => {
     if (event.key == "d") {
+        genetic.alivePopulation.forEach(agent => agent.isInside = false);
+        genetic.deadPopulation = genetic.alivePopulation;
+        genetic.deadPopulation.forEach(agent => genetic.isBestScore(agent, generation));
         genetic.deadPopulation = [];
         cars = [new Car(300, 180, 50, 20, new Brain(genetic.bestBrain[0], genetic.bestBrain[1], genetic.bestBrain[1], genetic.bestBrain[1]), ctx, carImage, carImag2, true)];
         genetic.alivePopulation = cars;
-    } else if (event.key == "q") {
-        console.log(genetic.alivePopulation)
-        genetic.deadPopulation = genetic.alivePopulation;
-        genetic.deadPopulation.forEach(agent => {
-            agent.isInside = false;
-        })
-        genetic.alivePopulation = [];
     } else if (event.key == "s") {
         let copyBestScore = prompt('Input the best score');
         let copyBestBrain = prompt('Input the brain');
@@ -114,13 +119,14 @@ window.addEventListener('keydown', (event) => {
     } else if (event.key == "p") {
         console.log(genetic.alivePopulation);
     } else if (event.key == 'r') {
-        if (roadImageLoaded + 1 <= roadImages.length - 1) {
-            roadImageLoaded += 1;
-        } else {
-            roadImageLoaded = 0;
-        }
-        roadImage.src = roadImages[roadImageLoaded];
+        swapRoad();
     }
 });
 
+// FIXME: Revisar que el maxReward y reward funcionen bien
+
 // TODO: Crear en branch training una función que haga un camino, si supera X puntaje, entonces que haga el siguiente, si supera Y puntaje, el siguiente, y si se realizan modificaciones en una generación, entonces que revise si sigue siendo capaz de pasar los caminos anteriores, si no puede que vuelva a entrenar ahi
+
+// TODO: Hacer una nueva clase que sea para el TODO de arriba
+
+// // TO DO: Crear una ruta con obstáculos en medio, como una rotonda por ejemplo
