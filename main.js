@@ -110,6 +110,12 @@ window.addEventListener('keydown', (event) => {
         genetic.deadPopulation = [];
         cars = [new Car(300, 180, 50, 20, new Brain(genetic.bestBrain[0], genetic.bestBrain[1], genetic.bestBrain[1], genetic.bestBrain[1]), ctx, carImage, carImag2, true)];
         genetic.alivePopulation = cars;
+        if (genetic.bestGeneration == generation) {
+            document.getElementById('generation').innerHTML = generation;
+            document.getElementById('bestScore').innerHTML = genetic.bestScore;
+            document.getElementById('bestGen').innerHTML = genetic.bestGeneration;
+        }
+
     } else if (event.key == "s") {
         let copyBestScore = prompt('Input the best score');
         let copyBestBrain = prompt('Input the brain');
@@ -122,11 +128,3 @@ window.addEventListener('keydown', (event) => {
         swapRoad();
     }
 });
-
-// FIXME: Revisar que el maxReward y reward funcionen bien
-
-// TODO: Crear en branch training una función que haga un camino, si supera X puntaje, entonces que haga el siguiente, si supera Y puntaje, el siguiente, y si se realizan modificaciones en una generación, entonces que revise si sigue siendo capaz de pasar los caminos anteriores, si no puede que vuelva a entrenar ahi
-
-// TODO: Hacer una nueva clase que sea para el TODO de arriba
-
-// // TO DO: Crear una ruta con obstáculos en medio, como una rotonda por ejemplo
